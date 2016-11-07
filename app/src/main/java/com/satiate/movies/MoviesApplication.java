@@ -1,3 +1,5 @@
+package com.satiate.movies;
+
 import android.app.Application;
 
 import com.android.volley.RequestQueue;
