@@ -10,5 +10,8 @@ public class Constants {
 
     //Open Data links
     public static final String SERIES = "http://s1.bia2m.biz/Series/";
-    public static final String OPEN_MOVIE_TITLE_SEARCH = " http://www.omdbapi.com/?s=";
+    public static final String OPEN_MOVIE_TITLE_SEARCH = "http://www.omdbapi.com/?s=";
+    public static final String OPEN_MOVIE_TITLE_SEARCH_SERIES_SUFFIX = "&type=series";
+    public static final String OPEN_MOVIE_TITLE_SEARCH_MOVIES_SUFFIX = "&type=movie";
+    public static final String OPEN_MOVIE_TITLE_SEARCH_EPISODES_SUFFIX = "&type=episode";
 }
