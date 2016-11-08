@@ -41,7 +41,7 @@ public class HomeScreen extends AppCompatActivity {
     private void getMovies()    //fetch movie listings
     {
         try {
-            BaseHttpRequest request = new BaseHttpRequest(HomeScreen.this, "http://s1.bia2m.biz/Series/");
+            BaseHttpRequest request = new BaseHttpRequest(HomeScreen.this, Constants.SERIES);
             request.setHtmlParser(new MoviesListingParser());
             IAsyncCallback callback = new IAsyncCallback() {
                 @Override
