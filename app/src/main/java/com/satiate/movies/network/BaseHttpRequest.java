@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -12,6 +14,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.satiate.movies.interfaces.IAsyncCallback;
 import com.satiate.movies.interfaces.IHTMLParser;
+import com.satiate.movies.utilities.Constants;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -28,15 +35,6 @@ public class BaseHttpRequest {
     Response.Listener<String> stringResponseListener;
     private IHTMLParser htmlParser;
     private String url;
-    Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            StringWriter errors = new StringWriter();
-            error.printStackTrace(new PrintWriter(errors));
-            dismissProgressDialog();
-            callback.onError(error.toString());
-        }
-    };
     private Context context;
 
     public BaseHttpRequest(Activity localActivity,
@@ -68,12 +66,24 @@ public class BaseHttpRequest {
         stringResponseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.d(Constants.TAG,"hello hello: "+response);
                 HTMLParseAsyncTask task = new HTMLParseAsyncTask();
                 task.setCurrentRequest(BaseHttpRequest.this);
+                task.setResponse(response);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, response);
             }
         };
     }
+
+    Response.ErrorListener errorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            StringWriter errors = new StringWriter();
+            error.printStackTrace(new PrintWriter(errors));
+            dismissProgressDialog();
+            callback.onError(error.toString());
+        }
+    };
 
     public void dismissProgressDialog() {
         if (progressDialog != null && progressDialog.isShowing()) {
@@ -96,7 +106,10 @@ public class BaseHttpRequest {
     }
 
     Request<String> getStringRequest() {
-        return new StringRequest(Request.Method.GET, url, stringResponseListener, errorListener);
+        StringRequest request = new StringRequest(Request.Method.GET, url, stringResponseListener, errorListener);
+        request.setRetryPolicy(new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        return request;
     }
 
 }

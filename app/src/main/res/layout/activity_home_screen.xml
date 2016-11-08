@@ -10,8 +10,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.satiate.movies.HomeScreen">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <VideoView
+        android:id="@+id/myVideo"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/bt_home_request"/>
+
+    <Button
+        android:id="@+id/bt_home_request"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_margin="25dp"
+        android:text="Request"
+        android:textAllCaps="true"
+        android:layout_alignParentBottom="true"
+        />
+
 </RelativeLayout>

@@ -3,6 +3,7 @@ package com.satiate.movies;
 import android.app.Application;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
 
 /**
@@ -27,5 +28,6 @@ public class MoviesApplication extends Application {
         super.onCreate();
         sInstance = this;
         mRequestQueue = Volley.newRequestQueue(this);
+        VolleyLog.DEBUG = true;
     }
 }
