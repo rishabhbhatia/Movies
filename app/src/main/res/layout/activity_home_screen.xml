@@ -35,6 +35,13 @@
         android:text="Request"
         android:textAllCaps="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        />
+
+    <include layout="@layout/home_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         />
 
 </RelativeLayout>

@@ -44,6 +44,10 @@ public class HomeScreen extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.iv_cover)
     ImageView ivCover;
+    @BindView(R.id.tv_home_footer_title)
+    TextView tvHomeFooterTitle;
+    @BindView(R.id.tv_home_footer_categories)
+    TextView tvHomeFooterCategories;
     private Movies movies;
 
     @Override
@@ -55,8 +59,7 @@ public class HomeScreen extends AppCompatActivity {
         loadToolbarProperties();
     }
 
-    private void loadToolbarProperties()
-    {
+    private void loadToolbarProperties() {
         int id = toolbarSearch.getContext()
                 .getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
@@ -67,11 +70,9 @@ public class HomeScreen extends AppCompatActivity {
                 .getResources()
                 .getIdentifier("android:id/search_plate", null, null);
         View v = toolbarSearch.findViewById(idPlate);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             v.setBackgroundColor(getColor(R.color.colorPrimaryDark));
-        }else
-        {
+        } else {
             v.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }
     }
