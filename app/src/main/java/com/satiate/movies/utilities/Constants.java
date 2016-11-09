@@ -14,4 +14,7 @@ public class Constants {
     public static final String OPEN_MOVIE_TITLE_SEARCH_SERIES_SUFFIX = "&type=series";
     public static final String OPEN_MOVIE_TITLE_SEARCH_MOVIES_SUFFIX = "&type=movie";
     public static final String OPEN_MOVIE_TITLE_SEARCH_EPISODES_SUFFIX = "&type=episode";
+
+    //Random Links
+    public static final String RANDOM_IMAGE = "https://unsplash.it/500/500/?random";
 }

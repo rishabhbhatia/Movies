@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.satiate.movies.interfaces.IAsyncCallback;
 import com.satiate.movies.models.Movie;
 import com.satiate.movies.models.Movies;
@@ -57,6 +58,16 @@ public class HomeScreen extends AppCompatActivity {
         ButterKnife.bind(this);
 
         loadToolbarProperties();
+        loadBackground();
+    }
+
+    private void loadBackground() {
+        Glide
+                .with(HomeScreen.this)
+                .load(Uri.parse(Constants.RANDOM_IMAGE))
+                .crossFade()
+                .fitCenter()
+                .into(ivCover);
     }
 
     private void loadToolbarProperties() {
