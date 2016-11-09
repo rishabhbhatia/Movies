@@ -4,27 +4,37 @@
     android:id="@+id/activity_home_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.satiate.movies.HomeScreen">
+
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
 
     <VideoView
         android:id="@+id/myVideo"
+        android:layout_below="@+id/toolbar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerInParent="true"
-        android:layout_above="@+id/bt_home_request"/>
+        />
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/app_name"
+        />
 
     <Button
         android:id="@+id/bt_home_request"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_margin="25dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_margin="10dp"
         android:text="Request"
         android:textAllCaps="true"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         />
 
 </RelativeLayout>

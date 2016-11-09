@@ -35,4 +35,5 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.karumi:dexter:2.3.1'
     provided 'org.projectlombok:lombok:1.16.2'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }

@@ -1,11 +1,18 @@
 package com.satiate.movies;
 
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -29,6 +36,14 @@ public class HomeScreen extends AppCompatActivity {
     VideoView videoView;
     @BindView(R.id.activity_home_screen)
     RelativeLayout activityHomeScreen;
+    @BindView(R.id.toolbar_search)
+    SearchView toolbarSearch;
+    @BindView(R.id.toolbar_iv_logo)
+    ImageView toolbarIvLogo;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.iv_cover)
+    ImageView ivCover;
     private Movies movies;
 
     @Override
@@ -36,6 +51,29 @@ public class HomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         ButterKnife.bind(this);
+
+        loadToolbarProperties();
+    }
+
+    private void loadToolbarProperties()
+    {
+        int id = toolbarSearch.getContext()
+                .getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) toolbarSearch.findViewById(id);
+        textView.setTextColor(Color.WHITE);
+
+        int idPlate = toolbarSearch.getContext()
+                .getResources()
+                .getIdentifier("android:id/search_plate", null, null);
+        View v = toolbarSearch.findViewById(idPlate);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            v.setBackgroundColor(getColor(R.color.colorPrimaryDark));
+        }else
+        {
+            v.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 
     private void getMovies()    //fetch movie listings
@@ -48,8 +86,7 @@ public class HomeScreen extends AppCompatActivity {
                 public void onComplete(WebResponse responseContent) {
                     movies = responseContent.getMovies();
 
-                    for(int i=0; i<movies.getMovies().size(); i++)
-                    {
+                    for (int i = 0; i < movies.getMovies().size(); i++) {
                         Movie movie = movies.getMovies().get(i);
                         Log.d(Constants.TAG, movie.getTitle());
                     }
@@ -58,7 +95,7 @@ public class HomeScreen extends AppCompatActivity {
                 @Override
                 public void onError(String errorData) {
                     Toast.makeText(HomeScreen.this, errorData, Toast.LENGTH_SHORT).show();
-                    Log.d(Constants.TAG, "error is: "+errorData);
+                    Log.d(Constants.TAG, "error is: " + errorData);
                 }
             };
             request.execute(callback, MoviesApplication.getInstance().getRequestQueue());
