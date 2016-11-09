@@ -7,7 +7,7 @@
 
     <style name="MySearchViewStyle" parent="Widget.AppCompat.Light.SearchView">
         <item name="android:textColorHint">@android:color/white</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 

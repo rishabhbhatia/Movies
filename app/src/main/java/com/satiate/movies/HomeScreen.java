@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.satiate.movies.utilities.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import jp.wasabeef.blurry.Blurry;
 
 public class HomeScreen extends AppCompatActivity {
 
@@ -49,6 +51,8 @@ public class HomeScreen extends AppCompatActivity {
     TextView tvHomeFooterTitle;
     @BindView(R.id.tv_home_footer_categories)
     TextView tvHomeFooterCategories;
+    @BindView(R.id.ll_home_footer_main)
+    LinearLayout llHomeFooterMain;
     private Movies movies;
 
     @Override
@@ -59,12 +63,23 @@ public class HomeScreen extends AppCompatActivity {
 
         loadToolbarProperties();
         loadBackground();
+//        blurFooter();
+    }
+
+    private void blurFooter()
+    {
+        Blurry.with(HomeScreen.this)
+                .radius(2)
+                .sampling(2)
+                .async()
+                .animate(500)
+                .onto(llHomeFooterMain);
     }
 
     private void loadBackground() {
         Glide
                 .with(HomeScreen.this)
-                .load(Uri.parse(Constants.RANDOM_IMAGE))
+                .load(Uri.parse("http://www.newvideo.com/wp-content/uploads/2011/10/Assassins-Creed-Lineage-DVD-F.jpg"))
                 .crossFade()
                 .fitCenter()
                 .into(ivCover);

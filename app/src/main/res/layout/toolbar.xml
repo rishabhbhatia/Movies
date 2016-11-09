@@ -14,7 +14,7 @@
 
         <SearchView
             android:id="@+id/toolbar_search"
-            android:layout_width="185dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_alignParentRight="true"
@@ -24,8 +24,7 @@
             android:queryHint="Search"
             android:theme="@style/MySearchViewStyle"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_margin="10dp"
             />
 
         <ImageView
