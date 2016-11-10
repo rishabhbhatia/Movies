@@ -68,7 +68,6 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         ButterKnife.bind(this);
 
         loadToolbarProperties();
-        loadBackground();
 //        blurFooter();
         loadCoverSlider();
     }
@@ -100,10 +99,11 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                 .onto(llHomeFooterMain);
     }
 
-    private void loadBackground() {
+    private void loadBackground(String poster) {
         Glide
                 .with(HomeScreen.this)
-                .load(Uri.parse("http://www.newvideo.com/wp-content/uploads/2011/10/Assassins-Creed-Lineage-DVD-F.jpg"))
+//                .load(Uri.parse("http://www.newvideo.com/wp-content/uploads/2011/10/Assassins-Creed-Lineage-DVD-F.jpg"))
+                .load(Uri.parse(poster))
                 .crossFade()
                 .fitCenter()
                 .into(ivCover);
@@ -136,16 +136,39 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(movies -> {
                         HomeScreen.this.movies = movies;
-                        Log.e("Current Weather", movies.getMovies()
-                                .get(0)
+
+                        Movie movie = movies.getMovies().get(0);
+
+                        Log.e(Constants.TAG, movie
                                 .getTitle());
                         loadMovieInfo();
+
+                        if(!movie.isInfo_present()) {
+                            fetchMovieInfo();
+                        }
+
                     });
 
         } catch (Exception e) {
             Toast.makeText(HomeScreen.this, "Some error occurred.", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+    }
+
+    private void fetchMovieInfo()
+    {
+       /* Observable<Movie> movieObservable = MoviesApplication.movieService.getMovieDetails(Constants.OPEN_MOVIE_TITLE_SEARCH+movies.getMovies().
+                get(sliderHomeCover.getCurrentPosition()).getTitle()+Constants.OPEN_MOVIE_TITLE_SEARCH_SERIES_SUFFIX);
+
+        movieObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(movie -> {
+
+                    Log.e(Constants.TAG, movie.toString());
+                    sliderHomeCover.getCurrentSlider().image(movie.getPoster()).setScaleType(BaseSliderView.ScaleType.Fit);
+                    movie.setInfo_present(true);
+                });
+*/
     }
 
     public static void longInfo(String str) {
@@ -157,8 +180,7 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     }
 
     private void playVideo(String sampleMovieFile) {
-//        videoView.setVideoURI(Uri.parse(sampleMovieFile[0]));
-        videoView.setVideoURI(Uri.parse("http://223.29.212.2/data/disk2/Hindi%20Movies/Rustom%20(2016)%20%5bHindi%5d%20%5b720p%5d%20DVDSCR.mkv"));
+        videoView.setVideoURI(Uri.parse(sampleMovieFile));
         videoView.start();
 //        Log.d(Constants.TAG, "staring video: "+sampleMovieFile[0]);
     }
@@ -176,6 +198,10 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         loadMovieInfo();
+
+        if(movies != null && movies.getMovies() != null && !movies.getMovies().get(sliderHomeCover.getCurrentPosition()).isInfo_present()) {
+            fetchMovieInfo();
+        }
     }
 
     private void loadMovieInfo()

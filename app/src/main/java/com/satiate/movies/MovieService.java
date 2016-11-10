@@ -1,9 +1,11 @@
 package com.satiate.movies;
 
+import com.satiate.movies.models.Movie;
 import com.satiate.movies.models.Movies;
 
 
 import retrofit2.http.GET;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -16,4 +18,7 @@ public interface MovieService {
 
     @GET("api/jsonBlob/5824a798e4b0a828bd21a48d")
     Observable<Movies> getMovies();
+
+    @GET()
+    Observable<Movie> getMovieDetails(@Url String url);
 }

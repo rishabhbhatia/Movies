@@ -9,25 +9,26 @@ import lombok.Data;
 public @Data class Movie {
 
     private String title;
-    private String year;
+    private String Year;
+    private String Type;
+    private String Poster;
+    private String Rated;
+    private String Released;
+    private String Runtime;
+    private String Genre;
+    private String Director;
+    private String Writer;
+    private String Actors;
+    private String Plot;
+    private String Language;
+    private String Country;
+    private String Metascore;
     private String imdbId;
-    private String type;
-    private String posterUrl;
-    private String rated;
-    private String released;
-    private String runtime;
-    private String genre;
-    private String director;
-    private String writer;
-    private String actors;
-    private String plot;
-    private String language;
-    private String country;
-    private String metascore;
     private String imdbRating;
     private String imdbVotes;
     private String totalSeasons;
-    private String response;
+    private String Response;
     private String trailer;
+    private boolean info_present;
 
 }
