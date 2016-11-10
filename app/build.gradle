@@ -39,4 +39,6 @@ dependencies {
     compile 'jp.wasabeef:blurry:2.0.3'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.jakob-grabner:Circle-Progress-View:v1.2.9.1'
+    compile 'com.daimajia.slider:library:1.1.5@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
 }
