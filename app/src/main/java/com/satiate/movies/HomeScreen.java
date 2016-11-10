@@ -18,6 +18,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.satiate.movies.interfaces.IAsyncCallback;
 import com.satiate.movies.models.Movie;
 import com.satiate.movies.models.Movies;
@@ -31,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.wasabeef.blurry.Blurry;
 
-public class HomeScreen extends AppCompatActivity {
+public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     @BindView(R.id.bt_home_request)
     Button btHomeRequest;
@@ -53,6 +57,9 @@ public class HomeScreen extends AppCompatActivity {
     TextView tvHomeFooterCategories;
     @BindView(R.id.ll_home_footer_main)
     LinearLayout llHomeFooterMain;
+    @BindView(R.id.slider_home_cover)
+    SliderLayout sliderHomeCover;
+
     private Movies movies;
 
     @Override
@@ -64,6 +71,23 @@ public class HomeScreen extends AppCompatActivity {
         loadToolbarProperties();
         loadBackground();
 //        blurFooter();
+        loadCoverSlider();
+    }
+
+    private void loadCoverSlider()
+    {
+        for(int i=0; i<100; i++)
+        {
+            DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
+            defaultSliderView
+                    .image("http://www.newvideo.com/wp-content/uploads/2011/10/Assassins-Creed-Lineage-DVD-F.jpg")
+                    .setScaleType(BaseSliderView.ScaleType.Fit)
+                    .setOnSliderClickListener(this);
+
+            sliderHomeCover.addSlider(defaultSliderView);
+        }
+
+        sliderHomeCover.addOnPageChangeListener(this);
     }
 
     private void blurFooter()
@@ -142,5 +166,25 @@ public class HomeScreen extends AppCompatActivity {
     @OnClick(R.id.bt_home_request)
     public void onClick() {
         getMovies();
+    }
+
+    @Override
+    public void onSliderClick(BaseSliderView slider) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }
