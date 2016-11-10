@@ -28,5 +28,6 @@ public @Data class Movie {
     private String imdbVotes;
     private String totalSeasons;
     private String response;
+    private String trailer;
 
 }

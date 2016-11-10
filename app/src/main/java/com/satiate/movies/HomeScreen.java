@@ -22,13 +22,8 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.google.gson.Gson;
-import com.satiate.movies.interfaces.IAsyncCallback;
 import com.satiate.movies.models.Movie;
 import com.satiate.movies.models.Movies;
-import com.satiate.movies.network.BaseHttpRequest;
-import com.satiate.movies.network.MoviesListingParser;
-import com.satiate.movies.network.WebResponse;
 import com.satiate.movies.utilities.Constants;
 
 import butterknife.BindView;
@@ -135,38 +130,16 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     private void getMovies()    //fetch movie listings
     {
         try {
-           /* BaseHttpRequest request = new BaseHttpRequest(HomeScreen.this, Constants.SERIES);
-            request.setHtmlParser(new MoviesListingParser());
-            IAsyncCallback callback = new IAsyncCallback() {
-                @Override
-                public void onComplete(WebResponse responseContent) {
-                    movies = responseContent.getMovies();
-
-                    for (int i = 0; i < movies.getMovies().size(); i++) {
-                        Movie movie = movies.getMovies().get(i);
-                        Log.d(Constants.TAG, movie.getTitle());
-                    }
-
-                    Gson gson = new Gson();
-                    longInfo(gson.toJson(movies));
-                }
-
-                @Override
-                public void onError(String errorData) {
-                    Toast.makeText(HomeScreen.this, errorData, Toast.LENGTH_SHORT).show();
-                    Log.d(Constants.TAG, "error is: " + errorData);
-                }
-            };
-            request.execute(callback, MoviesApplication.getInstance().getRequestQueue());*/
-
             Observable<Movies> moviesObservable = MoviesApplication.movieService.getMovies();
 
             moviesObservable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(movies -> {
+                        HomeScreen.this.movies = movies;
                         Log.e("Current Weather", movies.getMovies()
                                 .get(0)
                                 .getTitle());
+                        loadMovieInfo();
                     });
 
         } catch (Exception e) {
@@ -202,7 +175,18 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        loadMovieInfo();
+    }
 
+    private void loadMovieInfo()
+    {
+        if(movies != null && movies.getMovies() != null && movies.getMovies().get(sliderHomeCover.getCurrentPosition()) != null)
+        {
+            Movie movie = movies.getMovies().get(sliderHomeCover.getCurrentPosition());
+            String title = movie.getTitle();
+
+            if(title != null) tvHomeFooterTitle.setText(title);
+        }
     }
 
     @Override
