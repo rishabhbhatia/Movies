@@ -15,6 +15,10 @@ public class Constants {
     public static final String OPEN_MOVIE_TITLE_SEARCH_MOVIES_SUFFIX = "&type=movie";
     public static final String OPEN_MOVIE_TITLE_SEARCH_EPISODES_SUFFIX = "&type=episode";
 
+
+    //API Endpoints
+    public static final String MOVIES_ENDPOINT = "https://jsonblob.com/api/jsonBlob/5824a798e4b0a828bd21a48d";
+
     //Random Links
     public static final String RANDOM_IMAGE = "https://unsplash.it/500/500/?random";
 }

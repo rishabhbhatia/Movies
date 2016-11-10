@@ -22,6 +22,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.google.gson.Gson;
 import com.satiate.movies.interfaces.IAsyncCallback;
 import com.satiate.movies.models.Movie;
 import com.satiate.movies.models.Movies;
@@ -34,6 +35,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.wasabeef.blurry.Blurry;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
@@ -131,7 +135,7 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     private void getMovies()    //fetch movie listings
     {
         try {
-            BaseHttpRequest request = new BaseHttpRequest(HomeScreen.this, Constants.SERIES);
+           /* BaseHttpRequest request = new BaseHttpRequest(HomeScreen.this, Constants.SERIES);
             request.setHtmlParser(new MoviesListingParser());
             IAsyncCallback callback = new IAsyncCallback() {
                 @Override
@@ -142,6 +146,9 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                         Movie movie = movies.getMovies().get(i);
                         Log.d(Constants.TAG, movie.getTitle());
                     }
+
+                    Gson gson = new Gson();
+                    longInfo(gson.toJson(movies));
                 }
 
                 @Override
@@ -150,11 +157,30 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                     Log.d(Constants.TAG, "error is: " + errorData);
                 }
             };
-            request.execute(callback, MoviesApplication.getInstance().getRequestQueue());
+            request.execute(callback, MoviesApplication.getInstance().getRequestQueue());*/
+
+            Observable<Movies> moviesObservable = MoviesApplication.movieService.getMovies();
+
+            moviesObservable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(movies -> {
+                        Log.e("Current Weather", movies.getMovies()
+                                .get(0)
+                                .getTitle());
+                    });
+
         } catch (Exception e) {
             Toast.makeText(HomeScreen.this, "Some error occurred.", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+    }
+
+    public static void longInfo(String str) {
+        if(str.length() > 4000) {
+            Log.i(Constants.TAG, str.substring(0, 4000));
+            longInfo(str.substring(4000));
+        } else
+            Log.i(Constants.TAG, str);
     }
 
     private void playVideo(String sampleMovieFile) {
