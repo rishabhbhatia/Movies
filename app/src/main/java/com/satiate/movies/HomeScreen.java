@@ -88,6 +88,7 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         }
 
         sliderHomeCover.addOnPageChangeListener(this);
+        sliderHomeCover.stopAutoCycle();
     }
 
     private void blurFooter()
