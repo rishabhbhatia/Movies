@@ -18,6 +18,8 @@ public class Constants {
 
     //API Endpoints
     public static final String MOVIES_ENDPOINT = "https://jsonblob.com/api/jsonBlob/5824a798e4b0a828bd21a48d";
+    public static final String TRAILER_ENDPOINT = "http://trailersapi.com/trailers.json?movie=";
+    public static final String TRAILER_SUFFIX_ENDPOINT = "&limit=1";
 
     //Random Links
     public static final String RANDOM_IMAGE = "https://unsplash.it/500/500/?random";

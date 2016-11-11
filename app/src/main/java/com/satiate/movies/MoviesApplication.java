@@ -1,6 +1,9 @@
 package com.satiate.movies;
 
 import android.app.Application;
+import android.content.Context;
+
+import com.danikula.videocache.HttpProxyCacheServer;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -14,6 +17,8 @@ public class MoviesApplication extends Application {
 
     private static MoviesApplication sInstance;
     public static MovieService movieService;
+    private HttpProxyCacheServer proxy;
+
 
     public synchronized static MoviesApplication getInstance() {
         return sInstance;
@@ -31,5 +36,13 @@ public class MoviesApplication extends Application {
                 .build();
 
         movieService = retrofit.create(MovieService.class);
+    }
+
+    public static HttpProxyCacheServer getProxy() {
+        return getInstance().proxy == null ? (getInstance().proxy = getInstance().newProxy()) : getInstance().proxy;
+    }
+
+    private HttpProxyCacheServer newProxy() {
+        return new HttpProxyCacheServer(this);
     }
 }
