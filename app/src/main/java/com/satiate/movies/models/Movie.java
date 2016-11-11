@@ -30,5 +30,6 @@ public @Data class Movie {
     private String Response;
     private String trailer;
     private boolean info_present;
+    private YoutubeTrailer youtubeTrailer;
 
 }

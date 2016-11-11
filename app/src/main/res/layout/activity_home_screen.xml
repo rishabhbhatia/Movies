@@ -10,33 +10,6 @@
     <include layout="@layout/toolbar"
         android:id="@+id/toolbar"/>
 
-    <VideoView
-        android:id="@+id/myVideo"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        />
-
-    <com.google.android.youtube.player.YouTubePlayerView
-        android:id="@+id/youtube_player_home"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:layout_above="@+id/ll_home_footer_main"
-        />
-
-
-    <ImageView
-        android:id="@+id/iv_cover"
-        android:layout_below="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:visibility="gone"
-        android:contentDescription="@string/app_name"
-        />
-
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/slider_home_cover"
         android:layout_width="match_parent"

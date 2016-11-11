@@ -4,7 +4,12 @@ import android.app.Application;
 import android.content.Context;
 
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.satiate.movies.utilities.Constants;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -29,9 +34,20 @@ public class MoviesApplication extends Application {
         super.onCreate();
         sInstance = this;
 
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        // set your desired log level
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.readTimeout(Constants.NETWORK_CALL_TIMEOUT, TimeUnit.SECONDS);
+        httpClient.writeTimeout(Constants.NETWORK_CALL_TIMEOUT, TimeUnit.SECONDS);
+        // add your other interceptors …
+        // add logging as last interceptor
+        httpClient.addInterceptor(logging);  // <-- this is the important line!
+
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
                 .baseUrl(MovieService.MOVIE_BASE_ENDPOINT)
                 .build();
 

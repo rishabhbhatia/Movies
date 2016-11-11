@@ -1,7 +1,6 @@
 package com.satiate.movies;
 
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
@@ -27,9 +24,19 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.satiate.movies.models.JsonBlobResponse;
 import com.satiate.movies.models.Movie;
 import com.satiate.movies.models.Movies;
+import com.satiate.movies.models.YoutubeTrailer;
 import com.satiate.movies.utilities.Constants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,12 +46,10 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener, YouTubePlayer.OnInitializedListener {
+public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     @BindView(R.id.bt_home_request)
     Button btHomeRequest;
-    @BindView(R.id.myVideo)
-    VideoView videoView;
     @BindView(R.id.activity_home_screen)
     RelativeLayout activityHomeScreen;
     @BindView(R.id.toolbar_search)
@@ -53,8 +58,6 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
     ImageView toolbarIvLogo;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.iv_cover)
-    ImageView ivCover;
     @BindView(R.id.tv_home_footer_title)
     TextView tvHomeFooterTitle;
     @BindView(R.id.tv_home_footer_categories)
@@ -63,8 +66,6 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
     LinearLayout llHomeFooterMain;
     @BindView(R.id.slider_home_cover)
     SliderLayout sliderHomeCover;
-    @BindView(R.id.youtube_player_home)
-    YouTubePlayerView youtubePlayerHome;
     @BindView(R.id.frame_home_footer_play_pause)
     FrameLayout frameHomeFooterPlayPause;
 
@@ -79,14 +80,14 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
         loadToolbarProperties();
 //        blurFooter();
 //        loadCoverSlider();
-        youtubePlayerHome.initialize(Constants.YOUTUBE_API_KEY, this);
+        getMovies();
     }
 
     private void loadCoverSlider() {
         for (int i = 0; i < 100; i++) {
             DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
             defaultSliderView
-                    .image("http://www.newvideo.com/wp-content/uploads/2011/10/Assassins-Creed-Lineage-DVD-F.jpg")
+                    .image(Constants.RANDOM_IMAGE)
                     .setScaleType(BaseSliderView.ScaleType.Fit)
                     .setOnSliderClickListener(this);
 
@@ -106,17 +107,8 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
                 .onto(llHomeFooterMain);
     }
 
-    private void loadBackground(String poster) {
-        Glide
-                .with(HomeScreen.this)
-//                .load(Uri.parse("http://www.newvideo.com/wp-content/uploads/2011/10/Assassins-Creed-Lineage-DVD-F.jpg"))
-                .load(Uri.parse(poster))
-                .crossFade()
-                .fitCenter()
-                .into(ivCover);
-    }
-
-    private void loadToolbarProperties() {
+    private void loadToolbarProperties()
+    {
         int id = toolbarSearch.getContext()
                 .getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
@@ -144,16 +136,18 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
                     .subscribe(movies -> {
                         HomeScreen.this.movies = movies;
 
-                        Movie movie = movies.getMovies().get(0);
+                        DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
+                        defaultSliderView
+                                .image(Constants.RANDOM_IMAGE)
+                                .setScaleType(BaseSliderView.ScaleType.Fit)
+                                .setOnSliderClickListener(this);
 
-                        Log.e(Constants.TAG, movie
-                                .getTitle());
+                        sliderHomeCover.addSlider(defaultSliderView);
+
+                        sliderHomeCover.addOnPageChangeListener(this);
+                        sliderHomeCover.stopAutoCycle();
+
                         loadMovieInfo();
-
-                        if (!movie.isInfo_present()) {
-                            fetchMovieInfo();
-                        }
-
                     });
 
         } catch (Exception e) {
@@ -163,18 +157,43 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
     }
 
     private void fetchMovieInfo() {
-       /* Observable<Movie> movieObservable = MoviesApplication.movieService.getMovieDetails(Constants.OPEN_MOVIE_TITLE_SEARCH+movies.getMovies().
-                get(sliderHomeCover.getCurrentPosition()).getTitle()+Constants.OPEN_MOVIE_TITLE_SEARCH_SERIES_SUFFIX);
+
+        final int position = sliderHomeCover.getCurrentPosition();
+        final String movieTitle = movies.getMovies().
+                get(sliderHomeCover.getCurrentPosition()).getTitle();
+        Observable<Movie> movieObservable = MoviesApplication.movieService.getMovieDetails(Constants.OPEN_MOVIE_TITLE_SEARCH+ movieTitle
+                +Constants.OPEN_MOVIE_TITLE_SEARCH_SERIES_SUFFIX);
 
         movieObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(movie -> {
 
+                    movie.setTitle(movieTitle);
                     Log.e(Constants.TAG, movie.toString());
                     sliderHomeCover.getCurrentSlider().image(movie.getPoster()).setScaleType(BaseSliderView.ScaleType.Fit);
                     movie.setInfo_present(true);
+                    movies.getMovies().remove(position);
+                    movies.getMovies().add(position, movie);
+
+                    Log.e(Constants.TAG, "shud update blob now");
+                    Gson gson = new Gson();
+
+                    try {
+                        Type listType = new TypeToken<ArrayList<Movie>>() {}.getType();
+                        String json = gson.toJson(movies.getMovies(), listType);
+                        Observable<Void> jsonBlobResponseObservable = MoviesApplication.movieService.
+                                updateBlobJson(new JSONObject(json));
+
+                        jsonBlobResponseObservable.subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(Void -> {
+
+                                    Log.e(Constants.TAG, "blobs better be updated");
+                                });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
-*/
     }
 
     public static void longInfo(String str) {
@@ -185,16 +204,14 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
             Log.i(Constants.TAG, str);
     }
 
-    private void playVideo(String sampleMovieFile) {
-        sliderHomeCover.setVisibility(View.GONE);
-        videoView.setVideoURI(Uri.parse(sampleMovieFile));
-        videoView.start();
-//        Log.d(Constants.TAG, "staring video: "+sampleMovieFile[0]);
-    }
-
-    @OnClick(R.id.bt_home_request)
-    public void onClick() {
-        getMovies();
+    @OnClick( { R.id.bt_home_request, R.id.frame_home_footer_play_pause })
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_home_request:
+                break;
+            case R.id.frame_home_footer_play_pause:
+                break;
+        }
     }
 
     @Override
@@ -230,17 +247,4 @@ public class HomeScreen extends YouTubeBaseActivity implements BaseSliderView.On
 
     }
 
-    @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-        sliderHomeCover.setVisibility(View.GONE);
-        btHomeRequest.setVisibility(View.GONE);
-        youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
-        youTubePlayer.loadVideo("9l3DDSXkEQ0");
-        youTubePlayer.play();
-    }
-
-    @Override
-    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-            Log.d(Constants.TAG, youTubeInitializationResult.toString());
-    }
 }
