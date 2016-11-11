@@ -21,4 +21,7 @@ public class Constants {
 
     //Random Links
     public static final String RANDOM_IMAGE = "https://unsplash.it/500/500/?random";
+
+    //API Keys
+    public static final String YOUTUBE_API_KEY = "AIzaSyC2l5aEx-zfE32sp7HXtBJb5Yb-oISPr_c";
 }
