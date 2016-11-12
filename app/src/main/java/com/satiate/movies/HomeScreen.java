@@ -79,12 +79,15 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
     private void loadImageSliders(List<Movie> tempMovies)
     {
+        Movie currentMovie = tempMovies.get(sliderHomeCover.getCurrentPosition());
+
         for (int i = 0; i < tempMovies.size(); i++)
         {
             DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
             defaultSliderView
-                    .image(Constants.RANDOM_IMAGE)
+                    .image(currentMovie.getPoster())
                     .setScaleType(BaseSliderView.ScaleType.Fit)
+//                    .empty()  //TODO put an empty image placeholder
                     .setOnSliderClickListener(this);
 
             sliderHomeCover.addSlider(defaultSliderView);
@@ -95,9 +98,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
         if(isFirstDataset)
         {
-            Movie currentMovie = tempMovies.get(sliderHomeCover.getCurrentPosition());
             loadMovieInfo(currentMovie);
-            
+
             if(!currentMovie.isInfo_present())
             {
                 fetchMovieInfo(currentMovie);
