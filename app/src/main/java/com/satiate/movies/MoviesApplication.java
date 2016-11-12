@@ -47,7 +47,7 @@ public class MoviesApplication extends Application {
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
+//                .client(httpClient.build())       //enable this for detailed network data flow view
                 .baseUrl(MovieService.MOVIE_BASE_ENDPOINT)
                 .build();
 

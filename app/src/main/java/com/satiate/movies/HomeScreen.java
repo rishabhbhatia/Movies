@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,7 +70,7 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     @BindView(R.id.frame_home_footer_play_pause)
     FrameLayout frameHomeFooterPlayPause;
 
-    private Movies movies;
+    private ArrayList<Movie> movies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +84,10 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         getMovies();
     }
 
-    private void loadCoverSlider() {
-        for (int i = 0; i < 100; i++) {
+    private void loadImageSliders(List<Movie> someMovies)
+    {
+        for (int i = 0; i < someMovies.size(); i++)
+        {
             DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
             defaultSliderView
                     .image(Constants.RANDOM_IMAGE)
@@ -96,6 +99,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
         sliderHomeCover.addOnPageChangeListener(this);
         sliderHomeCover.stopAutoCycle();
+
+        loadMovieInfo();
     }
 
     private void blurFooter() {
@@ -129,25 +134,17 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     private void getMovies()    //fetch movie listings
     {
         try {
-            Observable<Movies> moviesObservable = MoviesApplication.movieService.getMovies();
+            Observable<ArrayList<Movie>> moviesObservable = MoviesApplication.movieService.getMovies();
 
             moviesObservable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(movies -> {
                         HomeScreen.this.movies = movies;
+                        Log.d(Constants.TAG, "Found movies "+movies.size());
 
-                        DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
-                        defaultSliderView
-                                .image(Constants.RANDOM_IMAGE)
-                                .setScaleType(BaseSliderView.ScaleType.Fit)
-                                .setOnSliderClickListener(this);
+                        List<Movie> someMovies = movies.subList(0,20);
 
-                        sliderHomeCover.addSlider(defaultSliderView);
-
-                        sliderHomeCover.addOnPageChangeListener(this);
-                        sliderHomeCover.stopAutoCycle();
-
-                        loadMovieInfo();
+                        loadImageSliders(someMovies);
                     });
 
         } catch (Exception e) {
@@ -156,11 +153,14 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         }
     }
 
-    private void fetchMovieInfo() {
+    private void fetchMovieInfo()
+    {
+        int position = sliderHomeCover.getCurrentPosition();
+        String movieTitle = movies.get(position).getTitle();
 
-        final int position = sliderHomeCover.getCurrentPosition();
-        final String movieTitle = movies.getMovies().
-                get(sliderHomeCover.getCurrentPosition()).getTitle();
+        Log.e(Constants.TAG, "fetch movie information "+position+" for movie "+movieTitle);
+
+
         Observable<Movie> movieObservable = MoviesApplication.movieService.getMovieDetails(Constants.OPEN_MOVIE_TITLE_SEARCH+ movieTitle
                 +Constants.OPEN_MOVIE_TITLE_SEARCH_SERIES_SUFFIX);
 
@@ -172,28 +172,28 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                     Log.e(Constants.TAG, movie.toString());
                     sliderHomeCover.getCurrentSlider().image(movie.getPoster()).setScaleType(BaseSliderView.ScaleType.Fit);
                     movie.setInfo_present(true);
-                    movies.getMovies().remove(position);
-                    movies.getMovies().add(position, movie);
+                    movies.remove(position);
+                    movies.add(position, movie);
 
                     Log.e(Constants.TAG, "shud update blob now");
                     Gson gson = new Gson();
 
                     try {
-                        Type listType = new TypeToken<ArrayList<Movie>>() {}.getType();
-                        String json = gson.toJson(movies.getMovies(), listType);
+                        String json = gson.toJson(movies);
+//                        longInfo(json);
                         Observable<Void> jsonBlobResponseObservable = MoviesApplication.movieService.
-                                updateBlobJson(new JSONObject(json));
+                                updateBlobJson(json);
 
                         jsonBlobResponseObservable.subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
+                                .observeOn(Schedulers.newThread())
                                 .subscribe(Void -> {
-
                                     Log.e(Constants.TAG, "blobs better be updated");
                                 });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
+
     }
 
     public static void longInfo(String str) {
@@ -223,15 +223,20 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         loadMovieInfo();
 
-        if (movies != null && movies.getMovies() != null && !movies.getMovies().get(sliderHomeCover.getCurrentPosition()).isInfo_present()) {
+        if (movies != null && !movies.get(sliderHomeCover.getCurrentPosition()).isInfo_present())
+        {
             fetchMovieInfo();
         }
     }
 
-    private void loadMovieInfo() {
-        if (movies != null && movies.getMovies() != null && movies.getMovies().get(sliderHomeCover.getCurrentPosition()) != null) {
-            Movie movie = movies.getMovies().get(sliderHomeCover.getCurrentPosition());
+    private void loadMovieInfo()
+    {
+        if (movies != null && movies.get(sliderHomeCover.getCurrentPosition()) != null)
+        {
+            Movie movie = movies.get(sliderHomeCover.getCurrentPosition());
             String title = movie.getTitle();
+
+            Log.e(Constants.TAG, "movie title is: "+title+ " at position "+sliderHomeCover.getCurrentPosition());
 
             if (title != null) tvHomeFooterTitle.setText(title);
         }
