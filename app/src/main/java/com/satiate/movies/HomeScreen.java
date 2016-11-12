@@ -95,8 +95,13 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
         if(isFirstDataset)
         {
-            loadMovieInfo(tempMovies.get(sliderHomeCover.getCurrentPosition()));
-            fetchMovieInfo(tempMovies.get(sliderHomeCover.getCurrentPosition()));
+            Movie currentMovie = tempMovies.get(sliderHomeCover.getCurrentPosition());
+            loadMovieInfo(currentMovie);
+            
+            if(!currentMovie.isInfo_present())
+            {
+                fetchMovieInfo(currentMovie);
+            }
         }else
         {
 //            sliderHomeCover.setCurrentPosition(someMovies.size()-2, true);
