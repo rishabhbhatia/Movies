@@ -20,22 +20,10 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.google.android.youtube.player.YouTubeBaseActivity;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.satiate.movies.models.JsonBlobResponse;
 import com.satiate.movies.models.Movie;
-import com.satiate.movies.models.Movies;
-import com.satiate.movies.models.YoutubeTrailer;
 import com.satiate.movies.utilities.Constants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +59,11 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     FrameLayout frameHomeFooterPlayPause;
 
     private ArrayList<Movie> movies;
+    private List<Movie> someMovies;
+
+    private boolean isFirstDataset = true;
+
+    private String json = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +77,9 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         getMovies();
     }
 
-    private void loadImageSliders(List<Movie> someMovies)
+    private void loadImageSliders(List<Movie> tempMovies)
     {
-        for (int i = 0; i < someMovies.size(); i++)
+        for (int i = 0; i < tempMovies.size(); i++)
         {
             DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
             defaultSliderView
@@ -97,10 +90,20 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
             sliderHomeCover.addSlider(defaultSliderView);
         }
 
+        sliderHomeCover.startAutoCycle();
         sliderHomeCover.addOnPageChangeListener(this);
-        sliderHomeCover.stopAutoCycle();
 
-        loadMovieInfo();
+        if(isFirstDataset)
+        {
+            loadMovieInfo(tempMovies.get(sliderHomeCover.getCurrentPosition()));
+            fetchMovieInfo(tempMovies.get(sliderHomeCover.getCurrentPosition()));
+        }else
+        {
+//            sliderHomeCover.setCurrentPosition(someMovies.size()-2, true);
+//            someMovies.addAll(movies);
+        }
+
+        isFirstDataset = false;
     }
 
     private void blurFooter() {
@@ -142,9 +145,10 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                         HomeScreen.this.movies = movies;
                         Log.d(Constants.TAG, "Found movies "+movies.size());
 
-                        List<Movie> someMovies = movies.subList(0,20);
+                        someMovies = movies.subList(629,740);
+                        List<Movie> tempMovies = movies.subList(629, 740);
 
-                        loadImageSliders(someMovies);
+                        loadImageSliders(tempMovies);
                     });
 
         } catch (Exception e) {
@@ -153,10 +157,10 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         }
     }
 
-    private void fetchMovieInfo()
+    private void fetchMovieInfo(Movie currentMovie)
     {
         int position = sliderHomeCover.getCurrentPosition();
-        String movieTitle = movies.get(position).getTitle();
+        String movieTitle = currentMovie.getTitle();
 
         Log.e(Constants.TAG, "fetch movie information "+position+" for movie "+movieTitle);
 
@@ -172,23 +176,28 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                     Log.e(Constants.TAG, movie.toString());
                     sliderHomeCover.getCurrentSlider().image(movie.getPoster()).setScaleType(BaseSliderView.ScaleType.Fit);
                     movie.setInfo_present(true);
-                    movies.remove(position);
-                    movies.add(position, movie);
+                    movies.remove(position+629);
+                    movies.add(position+629, movie);
 
                     Log.e(Constants.TAG, "shud update blob now");
                     Gson gson = new Gson();
 
                     try {
-                        String json = gson.toJson(movies);
+                        json = gson.toJson(movies);
 //                        longInfo(json);
-                        Observable<Void> jsonBlobResponseObservable = MoviesApplication.movieService.
-                                updateBlobJson(json);
 
-                        jsonBlobResponseObservable.subscribeOn(Schedulers.newThread())
-                                .observeOn(Schedulers.newThread())
-                                .subscribe(Void -> {
-                                    Log.e(Constants.TAG, "blobs better be updated");
-                                });
+                        if(sliderHomeCover.getCurrentPosition() == 110)
+                        {
+                            Observable<Void> jsonBlobResponseObservable = MoviesApplication.movieService.
+                                    updateBlobJson(json);
+
+                            jsonBlobResponseObservable.subscribeOn(Schedulers.newThread())
+                                    .observeOn(Schedulers.newThread())
+                                    .subscribe(Void -> {
+                                        Log.e(Constants.TAG, "blobs better be updated");
+                                    });
+                        }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -221,35 +230,54 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        loadMovieInfo();
-
-        if (movies != null && !movies.get(sliderHomeCover.getCurrentPosition()).isInfo_present())
-        {
-            fetchMovieInfo();
-        }
-    }
-
-    private void loadMovieInfo()
-    {
-        if (movies != null && movies.get(sliderHomeCover.getCurrentPosition()) != null)
-        {
-            Movie movie = movies.get(sliderHomeCover.getCurrentPosition());
-            String title = movie.getTitle();
-
-            Log.e(Constants.TAG, "movie title is: "+title+ " at position "+sliderHomeCover.getCurrentPosition());
-
-            if (title != null) tvHomeFooterTitle.setText(title);
-        }
     }
 
     @Override
     public void onPageSelected(int position) {
 
+        Movie movie = movies.get(sliderHomeCover.getCurrentPosition()+629);
+
+        loadMovieInfo(movie);
+
+        if (!movie.isInfo_present())
+        {
+            fetchMovieInfo(movie);
+        }
+
+        //TODO try to create pagination here
+       /* if(position == someMovies.size()-1 && movies.size() > someMovies.size())
+        {
+            sliderHomeCover.stopAutoCycle();
+            sliderHomeCover.removeAllSliders();
+            sliderHomeCover.removeOnPageChangeListener(HomeScreen.this);
+
+            if(movies.size() - someMovies.size() > 20)
+            {
+                List<Movie> someMoreMovies = movies.subList(someMovies.size(), (someMovies.size()+20));
+                Log.d(Constants.TAG, "size of some more movies is: "+someMoreMovies.size());
+                loadImageSliders(someMoreMovies);
+            }else
+            {
+                loadImageSliders(movies.subList(someMovies.size(), movies.size()));
+            }
+        }*/
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    private void loadMovieInfo(Movie currentMovie)
+    {
+        if (currentMovie != null)
+        {
+            String title = currentMovie.getTitle();
+
+            Log.e(Constants.TAG, "movie title is: "+title+ " at position "+sliderHomeCover.getCurrentPosition());
+
+            if (title != null) tvHomeFooterTitle.setText(title);
+        }
     }
 
 }
