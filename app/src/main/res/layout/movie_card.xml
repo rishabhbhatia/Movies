@@ -72,27 +72,97 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
                 >
 
-                <at.grabner.circleprogress.CircleProgressView
-                    android:id="@+id/circle_progress_movie_card_rating"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    CircleProgressView:cpv_barColor="@color/imdb_rating_progress"
-                    CircleProgressView:cpv_barWidth="25dp"
-                    CircleProgressView:cpv_innerContourSize="1dp"
-                    CircleProgressView:cpv_maxValue="10"
-                    CircleProgressView:cpv_outerContourSize="0dp"
-                    CircleProgressView:cpv_rimColor="@android:color/secondary_text_dark"
-                    CircleProgressView:cpv_rimWidth="25dp"
-                    CircleProgressView:cpv_seekMode="false"
-                    CircleProgressView:cpv_showUnit="false"
-                    CircleProgressView:cpv_spinColor="@color/imdb_rating_progress"
-                    CircleProgressView:cpv_textColor="@android:color/white"
-                    CircleProgressView:cpv_textScale="1"
-                    CircleProgressView:cpv_unitScale="1"
-                    CircleProgressView:cpv_value="1" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:orientation="vertical"
+                        >
+
+                        <at.grabner.circleprogress.CircleProgressView
+                            android:id="@+id/circle_progress_movie_card_rating"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            CircleProgressView:cpv_barColor="@color/imdb_rating_progress"
+                            CircleProgressView:cpv_barWidth="25dp"
+                            CircleProgressView:cpv_innerContourSize="1dp"
+                            CircleProgressView:cpv_maxValue="10"
+                            CircleProgressView:cpv_outerContourSize="0dp"
+                            CircleProgressView:cpv_rimColor="@android:color/secondary_text_dark"
+                            CircleProgressView:cpv_rimWidth="25dp"
+                            CircleProgressView:cpv_seekMode="false"
+                            CircleProgressView:cpv_showUnit="false"
+                            CircleProgressView:cpv_spinColor="@color/imdb_rating_progress"
+                            CircleProgressView:cpv_textColor="@android:color/white"
+                            CircleProgressView:cpv_textScale="1"
+                            CircleProgressView:cpv_unitScale="1"
+                            CircleProgressView:cpv_value="1" />
+
+                    </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_movie_card_imdb_votes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/primary_text_dark"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_movie_card_imdb_votes_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="votes"
+                        android:textSize="10sp"
+                        android:textColor="@android:color/primary_text_dark"
+                        />
+
+                </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        >
+
+                        <TextView
+                            android:id="@+id/tv_movie_card_movie_rated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:background="@drawable/tv_rectangle_bg"
+                            android:textColor="@android:color/primary_text_dark"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </RelativeLayout>
 

@@ -44,6 +44,8 @@ public class MovieSliderView extends BaseSliderView {
         TextView tvMovieName = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_name);
         TextView tvMovieCategory = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_category);
         TextView tvMovieDescription = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_description);
+        TextView tvMovieIMDBVotes = (TextView) movieCard.findViewById(R.id.tv_movie_card_imdb_votes);
+        TextView tvMovieRated = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_rated);
         circleProgressView = (CircleProgressView) movieCard.findViewById(R.id.circle_progress_movie_card_rating);
 
         Glide
@@ -56,6 +58,8 @@ public class MovieSliderView extends BaseSliderView {
         tvMovieName.setText(movie.getTitle());
         tvMovieCategory.setText(movie.getGenre());
         tvMovieDescription.setText(movie.getPlot());
+        tvMovieIMDBVotes.setText(movie.getImdbVotes());
+        tvMovieRated.setText(movie.getRated());
 
         if(movie.getImdbRating() != null)
         {
