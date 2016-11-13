@@ -90,6 +90,13 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 //                    .empty()  //TODO put an empty image placeholder
                     .setOnSliderClickListener(this);
 
+            BaseSliderView sliderView = new BaseSliderView(HomeScreen.this) {
+                @Override
+                public View getView() {
+                    return null;
+                }
+            };
+
             sliderHomeCover.addSlider(defaultSliderView);
         }
 

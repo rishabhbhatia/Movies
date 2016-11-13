@@ -3,4 +3,6 @@
     <color name="colorPrimary">#455A64</color>
     <color name="colorPrimaryDark">#37474F</color>
     <color name="colorAccent">#263238</color>
+
+    <color name="imdb_rating_progress">#FFFF00</color>
 </resources>

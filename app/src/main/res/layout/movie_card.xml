@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:CircleProgressView="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_movie_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:background="@color/colorPrimaryDark"
+        />
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_heightPercent="40%"
+            app:layout_widthPercent="80%"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_above="@+id/ll_movie_card_footer"
+            >
+
+            <TextView
+                android:id="@+id/tv_movie_card_movie_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:text="Breaking Bad"
+                />
+
+            <TextView
+                android:id="@+id/tv_movie_card_movie_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Adventure | Crime"
+                android:layout_marginTop="5dp"
+                android:textColor="@android:color/secondary_text_dark"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="15sp"
+                android:maxLines="5"
+                android:textColor="@android:color/white"
+                android:text="@string/lorem_ipsum"
+                android:ellipsize="end"
+                android:gravity="left"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                >
+
+                <at.grabner.circleprogress.CircleProgressView
+                    android:id="@+id/circleView"
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    CircleProgressView:cpv_autoTextSize="true"
+                    CircleProgressView:cpv_barColor="@color/imdb_rating_progress"
+                    CircleProgressView:cpv_barWidth="20dp"
+                    CircleProgressView:cpv_innerContourSize="0dp"
+                    CircleProgressView:cpv_maxValue="10"
+                    CircleProgressView:cpv_outerContourSize="0dp"
+                    CircleProgressView:cpv_rimColor="@android:color/secondary_text_dark"
+                    CircleProgressView:cpv_rimWidth="20dp"
+                    CircleProgressView:cpv_seekMode="false"
+                    CircleProgressView:cpv_showUnit="false"
+                    CircleProgressView:cpv_spinColor="@color/imdb_rating_progress"
+                    CircleProgressView:cpv_textColor="@android:color/white"
+                    CircleProgressView:cpv_textScale="1"
+                    CircleProgressView:cpv_unitScale="1"
+                    CircleProgressView:cpv_value="7.5" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_movie_card_footer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_heightPercent="10%"
+            app:layout_widthPercent="80%"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            >
+
+            </LinearLayout>
+
+    </android.support.percent.PercentRelativeLayout>
+
+</android.support.percent.PercentRelativeLayout>
