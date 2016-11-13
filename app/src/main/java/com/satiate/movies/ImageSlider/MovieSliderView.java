@@ -1,6 +1,7 @@
 package com.satiate.movies.ImageSlider;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
@@ -63,6 +64,7 @@ public class MovieSliderView extends BaseSliderView {
             circleProgressView.setText(movie.getImdbRating());
             circleProgressView.setTextColorAuto(false);
             circleProgressView.setAutoTextSize(true);
+            circleProgressView.setTextTypeface(Typeface.DEFAULT_BOLD);
 //            circleProgressView.setTextSize(15);
             circleProgressView.setTextMode(TextMode.TEXT);
 
