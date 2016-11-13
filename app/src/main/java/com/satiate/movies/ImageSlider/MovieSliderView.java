@@ -1,6 +1,7 @@
 package com.satiate.movies.ImageSlider;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.satiate.movies.models.Movie;
 import com.satiate.movies.utilities.Constants;
 
 import at.grabner.circleprogress.CircleProgressView;
+import at.grabner.circleprogress.TextMode;
 
 /**
  * Created by Rishabh Bhatia on 13/11/16.
@@ -56,6 +58,26 @@ public class MovieSliderView extends BaseSliderView {
 
         if(movie.getImdbRating() != null)
         {
+            circleProgressView.setBarWidth(10);
+            circleProgressView.setRimWidth(10);
+            circleProgressView.setText(movie.getImdbRating());
+            circleProgressView.setTextColorAuto(false);
+            circleProgressView.setAutoTextSize(true);
+//            circleProgressView.setTextSize(15);
+            circleProgressView.setTextMode(TextMode.TEXT);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                circleProgressView.setBarColor(context.getColor(R.color.imdb_rating_progress));
+                circleProgressView.setRimColor(context.getColor(R.color.colorPrimaryDark));
+                circleProgressView.setTextColor(context.getColor(android.R.color.white));
+            }else
+            {
+                circleProgressView.setBarColor(context.getResources().getColor(R.color.imdb_rating_progress));
+                circleProgressView.setRimColor(context.getResources().getColor(R.color.colorPrimaryDark));
+                circleProgressView.setTextColor(context.getResources().getColor(android.R.color.white));
+            }
+
             circleProgressView.setMaxValue(10);
             circleProgressView.setValue(0);
             circleProgressView.setValueAnimated(Float.valueOf(movie.getImdbRating()), 2500);

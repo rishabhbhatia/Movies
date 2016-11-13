@@ -77,8 +77,8 @@
 
                 <at.grabner.circleprogress.CircleProgressView
                     android:id="@+id/circle_progress_movie_card_rating"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     CircleProgressView:cpv_barColor="@color/imdb_rating_progress"
                     CircleProgressView:cpv_barWidth="25dp"
                     CircleProgressView:cpv_innerContourSize="1dp"
