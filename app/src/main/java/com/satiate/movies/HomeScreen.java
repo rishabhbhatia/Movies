@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
@@ -75,6 +76,7 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         ButterKnife.bind(this);
 
         loadToolbarProperties();
+        sliderHomeCover.getPagerIndicator().setIndicatorVisibility(PagerIndicator.IndicatorVisibility.Invisible);
 //        blurFooter();
 //        loadCoverSlider();
         getMovies();
