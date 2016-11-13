@@ -24,6 +24,7 @@ public class MovieSliderView extends BaseSliderView {
 
     private Movie movie;
     private Context context;
+    private CircleProgressView circleProgressView;
 
     public MovieSliderView(Context context, Movie movie) {
         super(context);
@@ -40,7 +41,7 @@ public class MovieSliderView extends BaseSliderView {
         TextView tvMovieName = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_name);
         TextView tvMovieCategory = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_category);
         TextView tvMovieDescription = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_description);
-        CircleProgressView circleProgressView = (CircleProgressView) movieCard.findViewById(R.id.circle_progress_movie_card_rating);
+        circleProgressView = (CircleProgressView) movieCard.findViewById(R.id.circle_progress_movie_card_rating);
 
         Glide
                 .with(context)
@@ -57,12 +58,23 @@ public class MovieSliderView extends BaseSliderView {
         {
             circleProgressView.setMaxValue(10);
             circleProgressView.setValue(0);
-            circleProgressView.setValueAnimated(Float.valueOf(movie.getImdbRating()));
+            circleProgressView.setValueAnimated(Float.valueOf(movie.getImdbRating()), 2500);
             circleProgressView.setText(movie.getImdbRating());
         }
 
         bindEventAndShow(movieCard, ivCover);
         return movieCard;
+    }
 
+    public void setRating(String rating) {
+
+        Log.d(Constants.TAG, "Update movie rating to "+rating);
+        if(rating != null)
+        {
+            circleProgressView.setMaxValue(10);
+            circleProgressView.setValue(0);
+            circleProgressView.setValueAnimated(Float.valueOf(rating), 2500);
+            circleProgressView.setText(rating);
+        }
     }
 }

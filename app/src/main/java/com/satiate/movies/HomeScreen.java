@@ -229,6 +229,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
         Movie movie = movies.get(sliderHomeCover.getCurrentPosition());
 
+       /* MovieSliderView movieSliderView = (MovieSliderView) sliderHomeCover.getCurrentSlider();       //TODO try to animate movie rating's
+        movieSliderView.setRating(movie.getImdbRating());*/
        /*
         if (!movie.isInfo_present())
         {
