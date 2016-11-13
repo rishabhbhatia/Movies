@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -16,6 +17,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
@@ -27,6 +29,7 @@ import com.satiate.movies.utilities.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.grabner.circleprogress.CircleProgressView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -79,25 +82,52 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
     private void loadImageSliders(List<Movie> tempMovies)
     {
-        Movie currentMovie = tempMovies.get(sliderHomeCover.getCurrentPosition());
 
         for (int i = 0; i < tempMovies.size(); i++)
         {
-            DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
+            final Movie currentMovie = tempMovies.get(i);
+
+           /* DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
             defaultSliderView
                     .image(currentMovie.getPoster())
                     .setScaleType(BaseSliderView.ScaleType.Fit)
 //                    .empty()  //TODO put an empty image placeholder
                     .setOnSliderClickListener(this);
-
+*/
             BaseSliderView sliderView = new BaseSliderView(HomeScreen.this) {
                 @Override
                 public View getView() {
-                    return null;
+                    LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                    View movieCard = layoutInflater.inflate(R.layout.movie_card, null);
+
+                    ImageView ivCover = (ImageView) movieCard.findViewById(R.id.iv_movie_card);
+                    TextView tvMovieName = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_name);
+                    TextView tvMovieCategory = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_category);
+                    TextView tvMovieDescription = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_description);
+                    CircleProgressView circleProgressView = (CircleProgressView) movieCard.findViewById(R.id.circle_progress_movie_card_rating);
+
+                    Glide
+                            .with(HomeScreen.this)
+                            .load(currentMovie.getPoster())
+                            .asBitmap()
+                            .fitCenter()
+                            .into(ivCover);
+
+                    tvMovieName.setText(currentMovie.getTitle());
+                    tvMovieCategory.setText(currentMovie.getGenre());
+                    tvMovieDescription.setText(currentMovie.getPlot());
+
+                    if(currentMovie.getImdbRating() != null)
+                    {
+                        circleProgressView.setValue(Float.valueOf(currentMovie.getImdbRating()));
+                    }
+
+                    return movieCard;
                 }
             };
 
-            sliderHomeCover.addSlider(defaultSliderView);
+//            sliderHomeCover.addSlider(defaultSliderView);
+            sliderHomeCover.addSlider(sliderView);
         }
 
         sliderHomeCover.startAutoCycle();
@@ -105,11 +135,11 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
         if(isFirstDataset)
         {
-            loadMovieInfo(currentMovie);
+            loadMovieInfo(tempMovies.get(0));
 
-            if(!currentMovie.isInfo_present())
+            if(!tempMovies.get(0).isInfo_present())
             {
-                fetchMovieInfo(currentMovie);
+//                fetchMovieInfo(currentMovie);
             }
         }else
         {
@@ -159,8 +189,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                         HomeScreen.this.movies = movies;
                         Log.d(Constants.TAG, "Found movies "+movies.size());
 
-                        someMovies = movies.subList(629,740);
-                        List<Movie> tempMovies = movies.subList(629, 740);
+                        someMovies = movies.subList(0,40);
+                        List<Movie> tempMovies = movies.subList(0, 40);
 
                         loadImageSliders(tempMovies);
                     });
@@ -190,8 +220,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                     Log.e(Constants.TAG, movie.toString());
                     sliderHomeCover.getCurrentSlider().image(movie.getPoster()).setScaleType(BaseSliderView.ScaleType.Fit);
                     movie.setInfo_present(true);
-                    movies.remove(position+629);
-                    movies.add(position+629, movie);
+                    movies.remove(position);
+                    movies.add(position, movie);
 
                     Log.e(Constants.TAG, "shud update blob now");
                     Gson gson = new Gson();
@@ -249,13 +279,13 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     @Override
     public void onPageSelected(int position) {
 
-        Movie movie = movies.get(sliderHomeCover.getCurrentPosition()+629);
+        Movie movie = movies.get(sliderHomeCover.getCurrentPosition());
 
         loadMovieInfo(movie);
 
         if (!movie.isInfo_present())
         {
-            fetchMovieInfo(movie);
+//            fetchMovieInfo(movie);
         }
 
         //TODO try to create pagination here

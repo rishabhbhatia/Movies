@@ -27,6 +27,7 @@
             android:orientation="vertical"
             android:layout_centerInParent="true"
             android:layout_above="@+id/ll_movie_card_footer"
+            android:layout_alignParentBottom="true"
             >
 
             <TextView
@@ -44,16 +45,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Adventure | Crime"
-                android:layout_marginTop="5dp"
-                android:textColor="@android:color/secondary_text_dark"
-                android:textSize="14sp"
+                android:textColor="@android:color/primary_text_dark"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 />
 
             <TextView
+                android:id="@+id/tv_movie_card_movie_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:textSize="15sp"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"
                 android:maxLines="5"
                 android:textColor="@android:color/white"
                 android:text="@string/lorem_ipsum"
@@ -63,14 +65,14 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 >
 
                 <at.grabner.circleprogress.CircleProgressView
-                    android:id="@+id/circleView"
-                    android:layout_width="125dp"
-                    android:layout_height="125dp"
+                    android:id="@+id/circle_progress_movie_card_rating"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     CircleProgressView:cpv_autoTextSize="true"
                     CircleProgressView:cpv_barColor="@color/imdb_rating_progress"
                     CircleProgressView:cpv_barWidth="20dp"
@@ -100,6 +102,7 @@
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
+            android:visibility="gone"
             >
 
             </LinearLayout>

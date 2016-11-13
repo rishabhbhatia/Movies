@@ -7,15 +7,11 @@
     android:layout_height="match_parent"
     tools:context="com.satiate.movies.HomeScreen">
 
-    <include layout="@layout/toolbar"
-        android:id="@+id/toolbar"/>
-
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/slider_home_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         custom:pager_animation="Accordion"
-        android:layout_below="@+id/toolbar"
         android:layout_above="@+id/ll_home_footer_main"
         />
 
@@ -29,12 +25,19 @@
         android:textAllCaps="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:visibility="gone"
         />
 
     <include layout="@layout/home_footer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        />
+
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"
+        android:visibility="gone"
         />
 
 </RelativeLayout>
