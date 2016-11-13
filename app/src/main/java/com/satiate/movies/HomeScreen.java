@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -17,24 +16,21 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.google.gson.Gson;
+import com.satiate.movies.ImageSlider.MovieSliderView;
 import com.satiate.movies.models.Movie;
 import com.satiate.movies.utilities.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import at.grabner.circleprogress.CircleProgressView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import jp.wasabeef.blurry.Blurry;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -77,8 +73,6 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
         loadToolbarProperties();
         sliderHomeCover.getPagerIndicator().setIndicatorVisibility(PagerIndicator.IndicatorVisibility.Invisible);
-//        blurFooter();
-//        loadCoverSlider();
         getMovies();
     }
 
@@ -89,76 +83,28 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         {
             final Movie currentMovie = tempMovies.get(i);
 
-           /* DefaultSliderView defaultSliderView = new DefaultSliderView(HomeScreen.this);
-            defaultSliderView
-                    .image(currentMovie.getPoster())
-                    .setScaleType(BaseSliderView.ScaleType.Fit)
-//                    .empty()  //TODO put an empty image placeholder
-                    .setOnSliderClickListener(this);
-*/
-            BaseSliderView sliderView = new BaseSliderView(HomeScreen.this) {
-                @Override
-                public View getView() {
-                    LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-                    View movieCard = layoutInflater.inflate(R.layout.movie_card, null);
+            MovieSliderView movieSliderView = new MovieSliderView(HomeScreen.this, currentMovie);
+            movieSliderView.setOnSliderClickListener(this);
 
-                    ImageView ivCover = (ImageView) movieCard.findViewById(R.id.iv_movie_card);
-                    TextView tvMovieName = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_name);
-                    TextView tvMovieCategory = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_category);
-                    TextView tvMovieDescription = (TextView) movieCard.findViewById(R.id.tv_movie_card_movie_description);
-                    CircleProgressView circleProgressView = (CircleProgressView) movieCard.findViewById(R.id.circle_progress_movie_card_rating);
-
-                    Glide
-                            .with(HomeScreen.this)
-                            .load(currentMovie.getPoster())
-                            .asBitmap()
-                            .fitCenter()
-                            .into(ivCover);
-
-                    tvMovieName.setText(currentMovie.getTitle());
-                    tvMovieCategory.setText(currentMovie.getGenre());
-                    tvMovieDescription.setText(currentMovie.getPlot());
-
-                    if(currentMovie.getImdbRating() != null)
-                    {
-                        circleProgressView.setValue(Float.valueOf(currentMovie.getImdbRating()));
-                    }
-
-                    return movieCard;
-                }
-            };
-
-//            sliderHomeCover.addSlider(defaultSliderView);
-            sliderHomeCover.addSlider(sliderView);
+            sliderHomeCover.addSlider(movieSliderView);
         }
 
         sliderHomeCover.startAutoCycle();
         sliderHomeCover.addOnPageChangeListener(this);
 
-        if(isFirstDataset)
+      /*  if(isFirstDataset)
         {
-            loadMovieInfo(tempMovies.get(0));
-
             if(!tempMovies.get(0).isInfo_present())
             {
-//                fetchMovieInfo(currentMovie);
+                fetchMovieInfo(tempMovies.get(0));
             }
         }else
         {
-//            sliderHomeCover.setCurrentPosition(someMovies.size()-2, true);
-//            someMovies.addAll(movies);
+            sliderHomeCover.setCurrentPosition(someMovies.size()-2, true);
+            someMovies.addAll(movies);
         }
 
-        isFirstDataset = false;
-    }
-
-    private void blurFooter() {
-        Blurry.with(HomeScreen.this)
-                .radius(2)
-                .sampling(2)
-                .async()
-                .animate(500)
-                .onto(llHomeFooterMain);
+        isFirstDataset = false;*/
     }
 
     private void loadToolbarProperties()
@@ -191,8 +137,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                         HomeScreen.this.movies = movies;
                         Log.d(Constants.TAG, "Found movies "+movies.size());
 
-                        someMovies = movies.subList(0,40);
-                        List<Movie> tempMovies = movies.subList(0, 40);
+                        someMovies = movies.subList(0,10);
+                        List<Movie> tempMovies = movies.subList(0, 10);
 
                         loadImageSliders(tempMovies);
                     });
@@ -283,13 +229,12 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
         Movie movie = movies.get(sliderHomeCover.getCurrentPosition());
 
-        loadMovieInfo(movie);
-
+       /*
         if (!movie.isInfo_present())
         {
-//            fetchMovieInfo(movie);
+            fetchMovieInfo(movie);
         }
-
+*/
         //TODO try to create pagination here
        /* if(position == someMovies.size()-1 && movies.size() > someMovies.size())
         {
@@ -312,18 +257,6 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     @Override
     public void onPageScrollStateChanged(int state) {
 
-    }
-
-    private void loadMovieInfo(Movie currentMovie)
-    {
-        if (currentMovie != null)
-        {
-            String title = currentMovie.getTitle();
-
-            Log.e(Constants.TAG, "movie title is: "+title+ " at position "+sliderHomeCover.getCurrentPosition());
-
-            if (title != null) tvHomeFooterTitle.setText(title);
-        }
     }
 
 }

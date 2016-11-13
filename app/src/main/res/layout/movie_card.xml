@@ -72,28 +72,27 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:padding="15dp"
                 >
 
                 <at.grabner.circleprogress.CircleProgressView
                     android:id="@+id/circle_progress_movie_card_rating"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    CircleProgressView:cpv_autoTextSize="true"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     CircleProgressView:cpv_barColor="@color/imdb_rating_progress"
-                    CircleProgressView:cpv_barWidth="20dp"
-                    CircleProgressView:cpv_innerContourSize="0dp"
+                    CircleProgressView:cpv_barWidth="25dp"
+                    CircleProgressView:cpv_innerContourSize="1dp"
                     CircleProgressView:cpv_maxValue="10"
                     CircleProgressView:cpv_outerContourSize="0dp"
                     CircleProgressView:cpv_rimColor="@android:color/secondary_text_dark"
-                    CircleProgressView:cpv_rimWidth="20dp"
+                    CircleProgressView:cpv_rimWidth="25dp"
                     CircleProgressView:cpv_seekMode="false"
                     CircleProgressView:cpv_showUnit="false"
                     CircleProgressView:cpv_spinColor="@color/imdb_rating_progress"
                     CircleProgressView:cpv_textColor="@android:color/white"
                     CircleProgressView:cpv_textScale="1"
                     CircleProgressView:cpv_unitScale="1"
-                    CircleProgressView:cpv_value="7.5" />
+                    CircleProgressView:cpv_value="1" />
 
             </RelativeLayout>
 
