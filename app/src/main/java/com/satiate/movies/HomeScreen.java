@@ -1,6 +1,7 @@
 package com.satiate.movies;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,9 @@ import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.devbrackets.android.exomedia.listener.OnErrorListener;
+import com.devbrackets.android.exomedia.listener.OnPreparedListener;
+import com.devbrackets.android.exomedia.ui.widget.EMVideoView;
 import com.google.gson.Gson;
 import com.satiate.movies.ImageSlider.MovieSliderView;
 import com.satiate.movies.models.Movie;
@@ -35,7 +39,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
+public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener, OnPreparedListener, OnErrorListener {
 
     @BindView(R.id.bt_home_request)
     Button btHomeRequest;
@@ -57,6 +61,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     SliderLayout sliderHomeCover;
     @BindView(R.id.frame_home_footer_play_pause)
     FrameLayout frameHomeFooterPlayPause;
+    @BindView(R.id.video_view)
+    EMVideoView emVideoView;
 
     private ArrayList<Movie> movies;
     private List<Movie> someMovies;
@@ -74,6 +80,11 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
         loadToolbarProperties();
         sliderHomeCover.getPagerIndicator().setIndicatorVisibility(PagerIndicator.IndicatorVisibility.Invisible);
         getMovies();
+
+       /* emVideoView.setOnPreparedListener(this);
+        emVideoView.setOnErrorListener(this);
+        emVideoView.setVideoURI(Uri.parse("http://s1.bia2m.biz/Series/11.22.63/s1/11.22.63%20S01E01%20(Bia2Movies).mkv"));*/
+
     }
 
     private void loadImageSliders(List<Movie> tempMovies)
@@ -129,6 +140,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
     private void getMovies()    //fetch movie listings
     {
         try {
+
+            Log.d(Constants.TAG, "111");
             Observable<ArrayList<Movie>> moviesObservable = MoviesApplication.movieService.getMovies();
 
             moviesObservable.subscribeOn(Schedulers.newThread())
@@ -141,6 +154,8 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
                         List<Movie> tempMovies = movies.subList(0, 10);
 
                         loadImageSliders(tempMovies);
+                        Log.d(Constants.TAG, "222");
+
                     });
 
         } catch (Exception e) {
@@ -261,4 +276,15 @@ public class HomeScreen extends AppCompatActivity implements BaseSliderView.OnSl
 
     }
 
+    @Override
+    public void onPrepared() {
+        emVideoView.start();
+        Log.d(Constants.TAG, "starting the video");
+    }
+
+    @Override
+    public boolean onError() {
+        Log.d(Constants.TAG, "error");
+        return false;
+    }
 }
